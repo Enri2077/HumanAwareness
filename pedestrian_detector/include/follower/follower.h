@@ -54,6 +54,7 @@ class Follower
   void updateHeadPosition();
 
   void clearCostmaps();
+  void say(std::string s);
 
   
  private:
@@ -68,6 +69,7 @@ class Follower
   ros::Publisher target_pose_publisher_;
   ros::Publisher next_target_pose_publisher_;
   ros::Publisher head_camera_position_publisher_;
+  ros::Publisher say_pub_;
 
   // Subscribers
   ros::Subscriber event_in_subscriber_;

@@ -76,6 +76,7 @@ Follower::Follower():
   residual_trajectory_publisher_ = nh_.advertise<nav_msgs::Path>("residual_trajectory", 2);
   target_pose_publisher_ = nh_.advertise<geometry_msgs::PoseStamped>("current_navigation_target", 2);
   next_target_pose_publisher_ = nh_.advertise<geometry_msgs::PoseStamped>("next_navigation_target", 2);
+  say_pub_ = private_nh.advertise<std_msgs::String>("say", 2);
   
   // Service Clients
   move_base_plan_service_client_ = nh_.serviceClient<nav_msgs::GetPlan>("/move_base/GlobalPlanner/make_plan");
@@ -681,6 +682,13 @@ void Follower::reset(){
 }
 
 
+void Follower::say(std::string s){
+    std_msgs::String m;
+    m.data = s;
+    say_pub_.publish(m);
+}
+
+ 
 void Follower::loop(){
   
   if(stop_navigation_ || e_failure_){
@@ -691,6 +699,13 @@ void Follower::loop(){
   if(following_enabled_ && !stop_navigation_ && !e_failure_){
 
     // TODO if rod navigation stack with path_following is unable to navigate, switch to move_base with person following
+    
+    geometry_msgs::Point zero;
+    
+//    if(!is_poi_tracked_ && euclidean_2d_distance(relative_poi_position_.point, zero) < person_pose_minimum_distance_ ){
+//        say("hello");
+//    }
+    
     
     if(update_trajectory_) {
       updateTrajectory();
@@ -791,6 +806,12 @@ void Follower::loop(){
 //      event_out_publisher_.publish(e);
 //    }
     
+//    // When is_poi_tracked_ changes
+    if(!prev_is_poi_tracked_ && is_poi_tracked_) {
+      say("hello");
+    }
+
+
     if(
       (!(e_success_ || e_failure_) && is_poi_in_starting_position_)||
       (!(e_success_ || e_failure_) && now - start_stamp_ > success_timeout_)||

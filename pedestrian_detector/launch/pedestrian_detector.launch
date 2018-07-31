@@ -18,10 +18,6 @@
   <arg name="target_pose_minimum_distance"  default="0.75" />
   <arg name="path_minimum_distance"         default="0.15" />
   
-  <arg name="success_timeout"               default="100000000.0"   />
-  <arg name="poi_lost_timeout"              default="5.0"   />
-  <arg name="poi_stopped_timeout"           default="20.0"   />
-  <arg name="poi_tracking_timeout"          default="5.0"   />
 
 
   <include file="$(find mbot_2dnav)/ros/launch/2dnav_people_following.launch" if="$(arg launch_navigation_stack)" />
@@ -37,7 +33,7 @@
 
     <remap from="object_2D_to_3D_pose/poses_out" to="upper_body_detector_poses" />
 
-    <include file="$(find mbot_object_localization)/ros/launch/mbot_people_to_3d.launch" >
+    <include file="$(find mbot_object_localization)/ros/launch/mbot_people_following.launch" >
       <remap from="/detection_result" to="/$(arg namespace)/detection_result" />
     </include>
 
@@ -55,11 +51,9 @@
       <param name="person_pose_minimum_distance"  type="double"   value="$(arg person_pose_minimum_distance)" />
       <param name="target_pose_minimum_distance"  type="double"   value="$(arg target_pose_minimum_distance)" />
       <param name="path_minimum_distance"         type="double"   value="$(arg path_minimum_distance)" />
-      <param name="success_timeout"               type="double"   value="$(arg success_timeout)" />
-      <param name="poi_lost_timeout"              type="double"   value="$(arg poi_lost_timeout)" />
-      <param name="poi_tracking_timeout"          type="double"   value="$(arg poi_tracking_timeout)" />
 
       <remap from="twist_topic" to="/cmd_vel_prio_medium"/>
+      <remap from="~say" to="/hri/say"/>
 
 
       <remap from="/move_base_simple/goal" to="/null/move_base_simple/goal" unless="$(arg move_base_simple)" />
